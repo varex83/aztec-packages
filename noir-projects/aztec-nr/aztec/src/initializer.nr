@@ -37,6 +37,7 @@ fn compute_unsiloed_contract_initialization_nullifier(address: AztecAddress) -> 
     address.to_field()
 }
 
+// Used in macros by `create_assert_correct_initializer_args` func.
 pub fn assert_initialization_matches_address_preimage_public(context: PublicContext) {
     let address = context.this_address();
     let deployer = get_contract_instance_deployer_avm(address).unwrap();
@@ -49,6 +50,7 @@ pub fn assert_initialization_matches_address_preimage_public(context: PublicCont
     );
 }
 
+// Used in macros by `create_assert_correct_initializer_args` func.
 pub fn assert_initialization_matches_address_preimage_private(context: PrivateContext) {
     let address = context.this_address();
     let instance = get_contract_instance(address);
