@@ -16,6 +16,35 @@ unconstrained fn get_height(input: u32, start: u8) -> u8 {
     height
 }
 
+/// Calculates the previous power of 2.
+///
+/// The previous power of 2 is the largest power of 2 that is less than or equal to a number.
+/// For example:
+/// - For 7, previous power of 2 is 4 (2^2)
+/// - For 10, previous power of 2 is 8 (2^3)
+/// - For 16, previous power of 2 is 16 (2^4)
+///
+/// # Arguments
+/// * value - Integer value for which we need to find the previous power of 2
+///
+/// # Returns
+/// The previous power of 2
+fn get_prev_power_2(value: u32) -> u32 {
+    // Find size of tree required
+    let height = unsafe {
+        //@safety This is safe because we derive next and previous powers of 2 below based on the height
+        // and the powers are then checked against the input value.
+        get_height(value, 0)
+    };
+
+    let next_power_2 = 2 << height;
+    let prev_power_2 = next_power_2 / 2;
+    assert((value == 0) | (value == 1) | (value > prev_power_2));
+    assert(value <= next_power_2);
+
+    prev_power_2
+}
+
 // This calculates the root of the minimal size merkle tree required
 // to store num_non_empty_leaves
 // Since we cannot isolate branches, it doesn't cost fewer gates than using
@@ -32,20 +61,8 @@ impl VariableMerkleTree {
     // |       tx_0      |  | tx_1 |
     //
     pub fn new_sha<let N: u32>(leaves: [Field; N], num_non_empty_leaves: u32) -> Self {
-        // Find size of tree required
-        let height = unsafe {
-            //@safety This is safe because we derive next and previous powers of 2 below based on the value
-            // and the powers are then checked against the num non empty leaves.
-            get_height(num_non_empty_leaves, 0)
-        };
-        let next_power_2 = 2 << height;
-        let prev_power_2 = next_power_2 / 2;
-        assert(
-            (num_non_empty_leaves == 0)
-                | (num_non_empty_leaves == 1)
-                | (num_non_empty_leaves > prev_power_2),
-        );
-        assert(num_non_empty_leaves <= next_power_2);
+        let prev_power_2 = get_prev_power_2(num_non_empty_leaves);
+
         // hash base layer
         // If we have no num_non_empty_leaves, we return 0
         let mut stop = if num_non_empty_leaves == 0 {
