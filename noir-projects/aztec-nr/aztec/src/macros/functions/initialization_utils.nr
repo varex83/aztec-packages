@@ -50,7 +50,7 @@ pub fn assert_initialization_matches_address_preimage_public(context: PublicCont
 }
 
 pub fn assert_initialization_matches_address_preimage_private(context: PrivateContext) {
-    let address: AztecAddress = context.this_address();
+    let address = context.this_address();
     let instance = get_contract_instance(address);
     let expected_init = compute_initialization_hash(context.selector(), context.get_args_hash());
     assert(instance.initialization_hash == expected_init, "Initialization hash does not match");
