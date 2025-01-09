@@ -37,7 +37,6 @@ fn compute_unsiloed_contract_initialization_nullifier(address: AztecAddress) -> 
     address.to_field()
 }
 
-// Used in macros by `create_assert_correct_initializer_args` func.
 pub fn assert_initialization_matches_address_preimage_public(context: PublicContext) {
     let address = context.this_address();
     let deployer = get_contract_instance_deployer_avm(address).unwrap();
@@ -50,9 +49,8 @@ pub fn assert_initialization_matches_address_preimage_public(context: PublicCont
     );
 }
 
-// Used in macros by `create_assert_correct_initializer_args` func.
 pub fn assert_initialization_matches_address_preimage_private(context: PrivateContext) {
-    let address = context.this_address();
+    let address: AztecAddress = context.this_address();
     let instance = get_contract_instance(address);
     let expected_init = compute_initialization_hash(context.selector(), context.get_args_hash());
     assert(instance.initialization_hash == expected_init, "Initialization hash does not match");
@@ -62,10 +60,7 @@ pub fn assert_initialization_matches_address_preimage_private(context: PrivateCo
     );
 }
 
-pub fn compute_initialization_hash(
-    init_selector: FunctionSelector,
-    init_args_hash: Field,
-) -> Field {
+fn compute_initialization_hash(init_selector: FunctionSelector, init_args_hash: Field) -> Field {
     poseidon2_hash_with_separator(
         [init_selector.to_field(), init_args_hash],
         GENERATOR_INDEX__CONSTRUCTOR,
