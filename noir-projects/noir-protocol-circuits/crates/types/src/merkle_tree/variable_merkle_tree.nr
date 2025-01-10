@@ -18,11 +18,11 @@ unconstrained fn get_height(input: u32, start: u8) -> u8 {
 
 /// Calculates the previous power of 2.
 ///
-/// The previous power of 2 is the largest power of 2 that is less than or equal to a number.
+/// The previous power of 2 is the largest power of 2 that is smaller than `value`.
 /// For example:
 /// - For 7, previous power of 2 is 4 (2^2)
 /// - For 10, previous power of 2 is 8 (2^3)
-/// - For 16, previous power of 2 is 16 (2^4)
+/// - For 16, previous power of 2 is 8 (2^3)
 ///
 /// # Arguments
 /// * value - Integer value for which we need to find the previous power of 2
