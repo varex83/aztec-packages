@@ -30,14 +30,13 @@ unconstrained fn get_height(input: u32, start: u8) -> u8 {
 /// # Returns
 /// The previous power of 2
 fn get_prev_power_2(value: u32) -> u32 {
-    // Find size of tree required
-    let height = unsafe {
-        //@safety This is safe because we derive next and previous powers of 2 below based on the height
-        // and the powers are then checked against the input value.
+    let next_power_exponent = unsafe {
+        //@safety This is a hint that we'll use to compute the next and previous powers of two, which we check to be
+        // larger and smaller than respectively. The get_height function happens to return exactly what we need.
         get_height(value, 0)
     };
 
-    let next_power_2 = 2 << height;
+    let next_power_2 = 2 << next_power_exponent;
     let prev_power_2 = next_power_2 / 2;
     assert((value == 0) | (value == 1) | (value > prev_power_2));
     assert(value <= next_power_2);
